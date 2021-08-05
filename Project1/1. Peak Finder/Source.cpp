@@ -8,8 +8,6 @@ using namespace std;
 	// for one sided values you have to check only the one neighbour they have
 
 //Try it yourself :: Proof Each 1D array has a peak ?
-
-
 int OneD_peakfinding(vector<int> myArray , int firstIndex, int lastIndex){
 	// we could solve it using O(n^2) algorithm by nested-for loops but its bad practice
 	// so Our algorithm 
@@ -40,15 +38,34 @@ int OneD_peakfinding(vector<int> myArray , int firstIndex, int lastIndex){
 		return OneD_peakfinding(myArray,firstIndex, firstIndex + mid - 1);
 	else
 		return myArray[firstIndex + mid]; 
-
 }
 
 
 
+// defining 2Dpeak problem :
+	// the value is peak iff its larger than all its neighbours from up , left , down , right
+int TwoD_peakfinding(vector<vector<int>> myMatrix, int rows , int cols){
+	
+	// we could solve it using O(nm) algorithm for n rows, m cols by nested-for loops but its bad practice
+	// so Our algorithm 
+		// 1. get middle column
+		// 2. get 1d peak in that col -> log(m) 
+			// there is another type which we can get global max but above is better as max is O(m) so we can do better
+		// 3. check neighbours to right and left only since we checked up,down in 1d peak algo in step 2 
+
+		// 4. if left > got value -> solve recursively left cols 
+		//    else if right > got value -> solve recursively right cols 
+		//	  else we got peak as its > all its neighbours 
+
+		int midColumn = (cols-1) /2 ; 
+		//OneD_peakfinding (myMatrix[midColumn],
+		
+}
+
 
 int main () {
 
-	vector<int> myArray;
+	/*vector<int> myArray;
 	myArray.push_back(1);
 	myArray.push_back(3);
 	myArray.push_back(4);
@@ -60,6 +77,8 @@ int main () {
 
 	int peak = OneD_peakfinding(myArray , 0,myArray.size()-1 ) ; 
 	cout <<"1D peak is " << peak << endl ;
+*/
+
 
 	system("pause"); 
 }
