@@ -62,7 +62,7 @@ int globalMaximum(vector<int> myArray , int &index){
 
 // defining 2Dpeak problem :
 	// the value is peak iff its larger than all its neighbours from up , left , down , right
-int TwoD_peakfinding(vector<vector<int>> myMatrix, int firstRow, int lastRow , int firstCol,int lastCol, int realcols = 5){
+int TwoD_peakfinding(vector<vector<int>> myMatrix, int firstRow, int lastRow , int firstCol,int lastCol){
 	
 	// First of All take care here of matrix[][] 
 	// My taken convention that the first place is for columns then each element has rows down to it
