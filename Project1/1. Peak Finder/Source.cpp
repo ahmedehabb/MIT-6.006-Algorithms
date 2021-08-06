@@ -47,11 +47,22 @@ int OneD_peakfinding(vector<int> myArray , int firstIndex, int lastIndex , int &
 	}
 }
 
+int globalMaximum(vector<int> myArray , int &index){
 
+	int max = myArray[0] ; 
+	index = 0 ; 
+	for(int i=1 ; i<myArray.size() ; i++){
+		if(myArray[i]>max){
+			max = myArray[i];
+			index = i ;
+		}
+	}
+	return max ;
+}
 
 // defining 2Dpeak problem :
 	// the value is peak iff its larger than all its neighbours from up , left , down , right
-int TwoD_peakfinding(vector<vector<int>> myMatrix, int firstRow, int lastRow , int firstCol,int lastCol){
+int TwoD_peakfinding(vector<vector<int>> myMatrix, int firstRow, int lastRow , int firstCol,int lastCol, int realcols = 5){
 	
 	// First of All take care here of matrix[][] 
 	// My taken convention that the first place is for columns then each element has rows down to it
@@ -61,8 +72,9 @@ int TwoD_peakfinding(vector<vector<int>> myMatrix, int firstRow, int lastRow , i
 	// we could solve it using O(nm) algorithm for n rows, m cols by nested-for loops but its bad practice
 	// so Our algorithm 
 		// 1. get middle column
-		// 2. get 1d peak in that col -> log(m) 
-			// there is another type which we can get global max but above is better as max is O(m) so we can do better
+		// 2. we can get global max but above is better as max is O(m) 
+			// someone will suggest to get 1d peak in that col -> log(m) its more efficient but incorrect as you will skip through a validation and if you tried to di it you will end 
+			// up spending more 
 		// 3. check neighbours to right and left only since we checked up,down in 1d peak algo in step 2 
 
 		// 4. if left > got value -> solve recursively left cols 
@@ -76,12 +88,14 @@ int TwoD_peakfinding(vector<vector<int>> myMatrix, int firstRow, int lastRow , i
 		
 		// foundIndexInColumn is row where 1d peak is found in midcolumn
 		int foundIndexInColumn = -1 ;
-		int oneDPeak = OneD_peakfinding (myMatrix[midColumn], 0 , rows - 1,foundIndexInColumn) ;
+		//int oneDPeak = OneD_peakfinding (myMatrix[midColumn], 0 , rows - 1,foundIndexInColumn) ; // wrong !! but efficient so dont use it!!!
+		int globalMax = globalMaximum(myMatrix[midColumn] , foundIndexInColumn );
 		
 		// comparing the 1dpeak i got but we need the index of oneDPeak value in column 
 		// if left is > , so will take left cols
 		if(midColumn-1 >=0 && myMatrix[midColumn-1][foundIndexInColumn] >  myMatrix[midColumn][foundIndexInColumn] )
 		{
+			
 			return TwoD_peakfinding(myMatrix,firstRow , lastRow  ,firstCol ,midColumn-1 ) ;
 		}
 		else if (midColumn+1 < cols && myMatrix[midColumn+1][foundIndexInColumn] >  myMatrix[midColumn][foundIndexInColumn] )
