@@ -167,8 +167,9 @@ public:
 
 	}
 
-	int findRank(int key){	
 
+	// this problem is stated in lec https://www.youtube.com/watch?v=9Jry5-82I68&list=PLUl4u3cNGP61Oq3tWYp6V_F-5jb5L2iHb&index=6&t=2s&ab_channel=MITOpenCourseWare
+	int findRank(int key){	
 		return findMyRank(root,key);
 	}
 

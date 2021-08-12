@@ -127,9 +127,34 @@ public:
 		return findKeyNode(root,key);
 	}
 
-	//int findNextLarger(int key){
-	//			
-	//}
+	int findNextLarger(int key){
+	
+		// steps 
+			// 1.  First, if the current node has a right child, move to that right child then, as long as you can see a left child, move to it
+			
+			// 2. Otherwise (i.e., if the current node has no right child), you need to move up to the parent continuously (so nodes need a right, left and parent pointer) 
+		    // until the node you moved from was a left child. 
+			// If you get to the root and you still haven't moved up from a left child,your original node was already the highest in the tree.
+
+		Node* found = findKey(key);
+		if(found){
+			if(found->getright())
+			{
+				return findMinNode(found->getright())->getValue() ; 
+			}else
+			{
+				while(found->getparent())
+				{
+					if(found->getparent()->getleft() ==found)
+						return found->getparent()->getValue();
+					else
+						found =found->getparent() ;
+				}
+			}
+		}else
+			return NULL ;
+
+	}
 
 
 

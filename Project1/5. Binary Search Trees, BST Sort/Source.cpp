@@ -17,10 +17,19 @@ int main() {
 	 for (int i=0 ; i<6; i++) {
 		 myBinarySearchTree.insert(keys[i]);
 		 AugmentedBinarySearchTree.insert(keys[i]);
-    }
- 
+	 }
+
+	 cout << " ----------------------------------" << endl ;
+	 cout << "BST -- finding min,max" << endl ; 
 	 cout <<myBinarySearchTree.findMin() << endl  ;
 	 cout <<myBinarySearchTree.findMax() << endl  ;
+	 cout << " ----------------------------------" << endl ;
+	 cout << "BST -- finding nextLarger" << endl ; 
+	 cout << myBinarySearchTree.findNextLarger(49)<<endl ;
+	 cout << myBinarySearchTree.findNextLarger(79)<<endl ;
+	 cout << myBinarySearchTree.findNextLarger(64)<<endl ;
+	 cout << myBinarySearchTree.findNextLarger(43)<<endl ;
+
 
 	 cout << " ----------------------------------" << endl ;
 	 cout << "Augmented BST -- finding sizes of all" << endl ; 
@@ -31,7 +40,7 @@ int main() {
 	 cout << AugmentedBinarySearchTree.findSize(64) << endl ;
 	 cout << AugmentedBinarySearchTree.findSize(83) << endl ;
 
-
+	 cout << " ----------------------------------" << endl ;
 	 cout << "Augmented BST -- finding rank " << endl ; 
 	 cout << AugmentedBinarySearchTree.findRank(79) << endl ;
 
