@@ -101,6 +101,30 @@ class AugmentedBST{
 
 	}
 
+	int findMyRank(AugmentedNode* subroot,int key){
+		
+		int sum = 0 ;
+
+		if(!subroot)
+			return 0; 
+		else
+		{
+			if(subroot->getValue() <= key){
+				sum = sum + 1 + subroot->getleft()->getSize() ;
+				sum += findMyRank(subroot->getright(),key) ;
+
+			}else
+			{
+				// this mean subroot's key > Ourkey so we can check left subtree of subroot
+				if(subroot->getleft()){
+					sum += findMyRank(subroot->getleft(),key) ;
+				}
+			}
+		}
+
+
+	}
+
 public:
 
 	AugmentedBST(){
@@ -143,10 +167,10 @@ public:
 
 	}
 
-	//int findNextLarger(int key){
-	//			
-	//}
+	int findRank(int key){	
 
+		return findMyRank(root,key);
+	}
 
 
 };

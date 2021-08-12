@@ -23,7 +23,7 @@ int main() {
 	 cout <<myBinarySearchTree.findMax() << endl  ;
 
 	 cout << " ----------------------------------" << endl ;
-	 cout << "Augmented BST -- finding sizes" << endl ; 
+	 cout << "Augmented BST -- finding sizes of all" << endl ; 
 	 cout << AugmentedBinarySearchTree.findSize(49) << endl ;
 	 cout << AugmentedBinarySearchTree.findSize(46) << endl ;
 	 cout << AugmentedBinarySearchTree.findSize(43) << endl ;
@@ -32,7 +32,8 @@ int main() {
 	 cout << AugmentedBinarySearchTree.findSize(83) << endl ;
 
 
-	 
+	 cout << "Augmented BST -- finding rank " << endl ; 
+	 cout << AugmentedBinarySearchTree.findRank(79) << endl ;
 
 	system("pause");
 }
