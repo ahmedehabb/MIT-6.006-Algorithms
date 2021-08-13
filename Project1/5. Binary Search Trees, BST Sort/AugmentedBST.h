@@ -122,7 +122,7 @@ class AugmentedBST{
 			}
 		}
 
-
+		return sum ;
 	}
 
 public:
