@@ -106,13 +106,20 @@ void countingSortByDigit( vector<int> &arr , int exp){
 
 	// TAKE CARE
 	// VI NOTE --> WE MUST DO BACKWARD LOOP 
-	// SINCE IF WE MAKE FORWARD LOOP AND #unit digits for ex = 9 -> count[0] =9
-	// this mean the loop will put unit digit- sorting descendingly 
+	// SINCE IF WE MAKE FORWARD LOOP AND we sort now by tenth digit 
+			//-> so all unit digits will be at count[0] --> #unit digits for ex = 9 -> count[0] =9
+			// so if for loop is forward count[ (arr[i]/exp)%10 ] = count[0] = 9
+				// so sorted[9] = arr[i] = arr[0] = 0 
+				// so sorted[8] = arr[i] = arr[1] = 1 
+				// so sorted[0] = arr[i] = arr[9] = 9
+				// so sorted [0..9] = 9 ....1 0 so incorrect
+				// this mean the loop will put unit digit- sorting descendingly
+
 	for(int i=arr.size() -1; i>=0; i--){
 		sorted [ --count[ (arr[i]/exp)%10 ] ] = arr[i] ;
 	}
 
-	// here we must return original array sorted -> as we will change it many times so cant return another one 
+	// here we must return original array sorted -> as we will call function many times on arr so we need to update arr itself 
 		for(int i=0; i<arr.size(); i++){
 			arr[i] = sorted[i] ;
 		}
