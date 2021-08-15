@@ -184,7 +184,28 @@ void radixSort(vector<int>& arr,vector<int>& indices){
 
  vector<int> twoSum(vector<int>& nums, int target) {
 
-	 vector<int> neg ,negIndices;
+	 // since we could have pos and neg numbers 
+	 // so to sort them -> i sorted each of them separately since our normal radix sort doesnt support -ve numbers
+	 
+	 // To sort neg Numbers
+		// i only cared about abs(values) and act as if they were positive
+		// so if arr =  -10 -5  -21
+		// i act as if its -> 10 5 21
+		// but output is [ 5 10 21] -> so i put that in reverse order so it will be (-21 -10 -5)
+
+
+	 // VI NOTE 
+		// that i made negIndices, posIndices -> where i pass real indices of the items in there 
+		// and change both of them while sorting 
+		// example : if Array : [-21 55 7 10 -4]
+			// so Initially
+				// pos array : [55 7 10] , posInd : [1 2 3]
+				// neg array : [-21 -4] , negInd : [0 4]
+			// after sorting
+				// pos array : [7 10 55] , posInd : [2 3 1]
+				// neg array : [-4 -21] , negInd : [4 0] --> remember i sort them as pos numbers then handle that
+
+	vector<int> neg ,negIndices;
 	vector<int> pos ,posIndices;
 
 	for(int i=0;i<nums.size();i++){
@@ -203,18 +224,29 @@ void radixSort(vector<int>& arr,vector<int>& indices){
 	if(pos.size()!=0)
 		radixSort(pos,posIndices);
 
+
+	// here is combining both pos and neg parts of main array ->
 	vector<int> indices(nums.size()) ;
 
+	// notice that i fill neg ones from back to forth as i said above
 	for(int i=0;i<neg.size();i++){
 		nums[i]=neg[ neg.size()-i-1];
 		indices[i]= ( negIndices[neg.size()-i-1]) ;
 	}
+
+	// filling pos 
 	for(int i=neg.size(),j=0;i<nums.size();j++,i++){
 		nums[i]= pos[j] ;
 		indices[i] = posIndices[j];
 	}
 
 	    vector<int> Target ;
+
+		// Main goal of sorting that 
+			// i made one for loop and i have arr[i] and target
+			// main objective to find y where :: arr[i] + y = target
+			// therefore we could do BinarySearch on y where y = target - arr[i]
+			// and if found return them
         for(int i=0; i<nums.size();i++){
             int y=binarySearch(nums,0,nums.size()-1,target - nums[i]);
             if(y!=i && y!= -1 ){
@@ -237,7 +269,28 @@ int main (){
 	arr.push_back(993808); 
 	//arr.push_back(7677553); 
 
+	// this problem is called twoSum in leetCode you could find it in website
+	// Problem :Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
+	// you could easily solve it using O(n^2) but its not better solution
+	// for more better solution you could sort the array but you must save the original indices and change them while you sort
+	// as output : is to find original indices of 2 elements giving that target
 
+	// in Order to know difference between this solution and nested loop solution 
+	// nested loop time : 364 ms -- while that solution : 20 ms only
+
+	// you Could even do better using hash tables -- Try it.
+
+	// Ok so Our Algorithm 
+		// 1. Sort the array of numbers[pos,neg] using radix sort
+		// Ok why ????
+			// Main goal of sorting that 
+			// to make one for loop instead of two 
+			//so for each loop i have arr[i] and a target
+			// MAIN OBJECTIVE : 
+				//to find y where :: arr[i] + y = target
+				// therefore we could do BinarySearch on y where y = target - arr[i]
+				// and if found return them
+	
 	vector<int> tar =twoSum(arr,-3483173);
 
 	for( int i = 0 ; i<tar.size() ; i++){
