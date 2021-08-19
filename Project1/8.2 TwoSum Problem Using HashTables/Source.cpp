@@ -40,7 +40,11 @@ using namespace std;
 	 nums.push_back(9);
 	 int target = 9 ;
 
-	 twoSum(nums,target) ;
+	vector<int> result = twoSum(nums,target) ;
+
+	for(int i=0; i< result.size(); i++){
+		cout << result[i]<<endl;
+	}
 
 	 system("pause") ;
  }
