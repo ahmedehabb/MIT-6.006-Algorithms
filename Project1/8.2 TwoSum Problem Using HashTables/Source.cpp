@@ -9,7 +9,12 @@ using namespace std;
      vector<int> result ; 
     
      for(int i=0; i<nums.size() ; i++){
-         // to check if key exists
+         // to check if key exists we use map.find[key]!=map.end() 
+		 // as if map doesnt exists map.find return map.end
+
+		 // Take care --> here we must check the target-nums[i] before inserting nums[i] in hash table 
+		 // as there could be collisions as for ex [3 3] and target =6 
+		 // this would fall if you put element first as 2nd three will overwrite the first one
          if(map.find(target-nums[i])!= map.end() ) {
              result.push_back(i);
              result.push_back(map[target-nums[i]] );
