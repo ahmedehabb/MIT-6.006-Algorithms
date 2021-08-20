@@ -139,7 +139,7 @@ public:
 		}
 	}
 
-	int prehash_Division_Method(int key){
+	int hash(int key){
 
 		// in division method we avoid certain values of m such as 2^p 
 		// as h(k) will be p-lowest bits of k
@@ -153,27 +153,9 @@ public:
 		return key % m ;
 	}
 
-	int prehash_Multiplication_Method(int key){
-
-		// so hash = floor ( m* fraction(A*key) ) ;
 	
-		// first we multiply key by constant A , 0<A<1
-		// knuth suggests that A = (sqrt(5) -1) /2 = 0.61803398... 
-		// search why this constant might work better // Knuth, "Sorting and Searching", v. 3 of "The Art of Computer Programming").
-		double A = 0.6180339887;
-
-		// then we extract fraction part of this product 
-		// to extract -> use modf() function to extract fractional part 
-		double product = A*key, intPart, fractPart;
-		fractPart = modf(product, &intPart);
-
-		// then we multiply this fractional part by m and take the floor
-		return floor(fractPart*m);
-
-	}
-
 	void insert_Division(int key){
-		int index = prehash_Division_Method(key);
+		int index = hash(key);
 
 		if( array[index] == nullptr){
 			// mean linked list is not initiated 
@@ -184,20 +166,9 @@ public:
 		return ;
 	}
 
-	void insert_Multiplication(int key){
-		int index = prehash_Multiplication_Method(key);
-
-		if(array[index] == nullptr){
-			// mean linked list is not initiated 
-			array[index]= new LinkedList<int>();	
-		}
-
-		array[index]->insert(key);
-		return ;
-	}
-
+	
 	Node<int>* searchKey_Division(int key){
-		int index = prehash_Division_Method(key);
+		int index = hash(key);
 		if(array[index] == nullptr){
 			// mean linked list is not initiated so cant be here
 			return nullptr ;
@@ -207,30 +178,10 @@ public:
 
 	}
 
-	Node<int>* searchKey_Multiplication(int key){
-		int index = prehash_Multiplication_Method(key);
-		if(array[index] == nullptr){
-			// mean linked list is not initiated so cant be here
-			return nullptr ;
-		}
-		return array[index]->search(key);
-	}
-
-	void deleteKey_Multiplication(int key){
-		// we must know index to know which linked list 
-		int index = prehash_Multiplication_Method(key);
-		if(array[index] == nullptr){
-			// mean linked list is not initiated so cant be here
-			return ;
-		}
-		Node<int>* found  = searchKey_Multiplication(key);
-		if(found)
-			array[index]->deleteNode(found);
-	}
-
+	
 	void deleteKey_Division(int key){
 		// we must know index to know which linked list 
-		int index = prehash_Division_Method(key);
+		int index = hash(key);
 		if(array[index] == nullptr){
 			// mean linked list is not initiated so cant be here
 			return ;
