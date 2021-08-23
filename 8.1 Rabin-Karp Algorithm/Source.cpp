@@ -28,6 +28,10 @@ vector<int> naiveStringMatching(string p, string t){
 
 
 //Rabin-Karp
+
+// https://stackoverflow.com/questions/15945401/prime-number-and-block-length-in-karp-rabin
+// better see this : help in understanding choice of prime-number-and-block-length-in-karp-rabin
+
 // p : substring
 // t : whole text
 // q : prime
