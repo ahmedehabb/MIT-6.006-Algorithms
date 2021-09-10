@@ -280,6 +280,11 @@ int Solve(vector<vector<char>>& maze, vector<int> entrance,	unordered_map<int,bo
 			["+",".",".",".","+",".","+"],
 			["+","+","+","+","+",".","+"]]*/
 	
+
+	// Very tricky and important :: 
+	// this is to ensure not to check a path which is longer than you minimum just backtrack 
+	if(level+1 > minpath)
+		return minpath;
 	
 	// if its entrance will be [1 0] -> so will take number 10 in hash table
 	visited[entrance[0]*10+entrance[1]]=1 ;
@@ -314,7 +319,7 @@ int Solve(vector<vector<char>>& maze, vector<int> entrance,	unordered_map<int,bo
 		// will pass last visited as my current entrance
 		// and new entrance will be temp->getkey as it is the neighbour 
 		Solve(maze,temp->getKey(),visited,level+1,minpath );
-
+		
 		temp=temp->getNext();
 	}
 	
