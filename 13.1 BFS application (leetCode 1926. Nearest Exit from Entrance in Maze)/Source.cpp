@@ -1,162 +1,107 @@
 #include<iostream>
 #include<unordered_map>
 #include <vector>
+
 #include <string>
 using namespace std; 
 
 
-vector<vector<int>>  handleNeighbours(vector<vector<char>>& maze, vector<int>& entrance,vector<vector<int>>& visited,bool &border){
 
-	// this bool border will change it to 1 -> mean we found a border element and you should finish
-	// no need to continue finding other neighbours
+vector<vector<int>> handleNeighbours2(vector<vector<char>>& maze, vector<int>& entrance){
 
-	vector< vector<int> > adjacencyList ; // we will save [row,col] as an element 
-	vector<int> x;	
+	int row=entrance[0],col=entrance[1];
+	vector<vector<int>> newbies ;
+	if( entrance[0]>0 &&
+		 maze[row-1][col]=='.'){ // mean it can have upper child
 
-	if( entrance[0]>0 && 
-		(visited[entrance[0]-1][entrance[1]]==0) && // inorder not to get back
-		 maze[entrance[0]-1][entrance[1]]=='.'){ // mean it can have upper child
 
-		x.push_back(entrance[0]-1);
-		x.push_back(entrance[1]);
-		adjacencyList.push_back(x);
-		if( x[0]==0 || x[0]==maze.size()-1 || x[1]==0 || x[1]==maze[0].size()-1  ){
-			border=1;
-			return adjacencyList; // no need to continue
-		}
-		x.clear();
+		maze[row-1][col]='+';
+        vector<int> x ;
+		x.push_back(row-1);
+		x.push_back(col);
+		newbies.push_back(x);
 	}
 
-	if( entrance[0]< maze.size()-1 &&
-		(visited[entrance[0]+1][entrance[1]]==0) && // inorder not to get back
-		 maze[entrance[0]+1][entrance[1]]=='.'){ // mean it can have lower child
-		x.push_back(entrance[0]+1);
-		x.push_back(entrance[1]);
-		adjacencyList.push_back(x);
-		if( x[0]==0 || x[0]==maze.size()-1 || x[1]==0 || x[1]==maze[0].size()-1  ){
-			border=1;
-			return adjacencyList; // no need to continue
-		}
-		x.clear();
+	if( row< maze.size()-1 &&
+		 maze[row+1][col]=='.'){ // mean it can have lower child
+
+		maze[row+1][col]='+';
+
+        vector<int> x ;
+		x.push_back(row+1);
+		x.push_back(col);
+		newbies.push_back(x);
 	}
 	
-	if( entrance[1]>0 &&
-		(visited[entrance[0]][entrance[1]-1]==0) && // inorder not to get back
-		 maze[entrance[0]][entrance[1]-1]=='.'){ // mean it can have left child
-		x.push_back(entrance[0]);
-		x.push_back(entrance[1]-1);
-		adjacencyList.push_back(x);
-		if( x[0]==0 || x[0]==maze.size()-1 || x[1]==0 || x[1]==maze[0].size()-1  ){
-			border=1;
-			return adjacencyList; // no need to continue
-		}
-		x.clear();
+	if( col>0 &&
+		 maze[row][col-1]=='.'){ // mean it can have left child
+
+		maze[row][col-1]='+';
+
+        vector<int> x ;
+		x.push_back(row);
+		x.push_back(col-1);
+		newbies.push_back(x);
+	
 	}
 
-	if( entrance[1]<maze[0].size()-1 &&
-		(visited[entrance[0]][entrance[1]+1]==0) && // inorder not to get back
-		 maze[entrance[0]][entrance[1]+1]=='.'){ // mean it can have right child
-		x.push_back(entrance[0]);
-		x.push_back(entrance[1]+1);
-		adjacencyList.push_back(x);
-		if( x[0]==0 || x[0]==maze.size()-1 || x[1]==0 || x[1]==maze[0].size()-1  ){
-			border=1;
-			return adjacencyList; // no need to continue
-		}
-		x.clear();
+	if( col<maze[0].size()-1 &&
+		 maze[row][col+1]=='.'){ // mean it can have right child
+        
+		maze[row][col+1]='+';
+        vector<int> x ;
+		x.push_back(row);
+		x.push_back(col+1);
+		newbies.push_back(x);
 	}
-
-	return adjacencyList;
+	return newbies ;
 
 }
 
 
-	
-int Solve(vector<vector<char>>& maze, vector<int> entrance,	vector<vector<int>>& visited,int level ,int &minpath) {
-
-	// we must keep track of previous visited node in order not to enter infinite loop
-
-	// first thing we will make is adjacency list 
-	// our neighbours will be only those around us in matrix and must be reachable
-
-	// ex :    + . . + +
-	//         + + . + +
-	//	       . + . + +
-	
-	// and you entered at 0,1 first row 2nd column -> so you will hav eonly 1 neighbour -> at (0,2)
-
-	// our adjacency List will only be one linked list and will be updated as we go 
-	// we dont need to get all possible neighbours of each point 
-	
-
-		/*
-		[[".",".",".",".",".","+",".",".","."]
-		,[".","+",".",".",".",".",".",".","."]
-		,[".",".","+",".","+",".","+",".","+"]
-		,[".",".",".",".","+",".",".",".","."]
-		,[".",".",".",".","+","+",".",".","."]
-		,["+",".",".",".",".",".",".",".","."]
-		,[".",".",".","+",".",".",".",".","."]
-		,[".",".",".","+",".",".",".",".","+"]
-		,["+",".",".","+",".","+","+",".","."]]
+int Solve2(vector<vector<char>>& maze, vector<int> entrance){
 		
-		*/
+		// this is important as we could return back to it 
+        maze[entrance[0]][entrance[1]]='+';
+
+        int minpath = INT_MAX ;
+		vector<vector<int>> frontier,adj;
+		frontier.push_back(entrance);
+
+		int currentlevel = 1; 
 	
-	// Very tricky and important :: 
-		// this is to ensure not to check a path which is longer than you minimum just backtrack 
-	if(level+1 > minpath)
+        int rows = maze.size(), cols= maze[0].size();
+
+    
+		while (frontier.size())
+		{
+			vector<vector<int>> next;
+
+			for (int i = 0; i < frontier.size(); i++)
+			{
+
+				// this function get all possible neighbours and marks them + so we dont reach them again 
+				// we could leave them as they are and check inside next for loop but must make flag or whatever
+				adj= handleNeighbours2(maze,frontier[i]);
+
+				for (int j = 0; j < adj.size(); j++)
+				{
+						next.push_back(adj[j]);
+						// check border ?
+						if( adj[j][0]==0 || adj[j][0]==rows-1 || adj[j][1]==0 || adj[j][1]==cols-1  ){
+							if(currentlevel<minpath){
+                                minpath=currentlevel;
+                            }
+						}
+				}
+			
+			}
+			frontier = next ;
+			currentlevel +=1; 
+		}
+
 		return minpath;
-	
-	// if its entrance will be [1 0] -> so will take number 10 in hash table
-	visited[entrance[0]][entrance[1]]=1 ;
 
-	// border rows/ cols
-	if(level!=0 && ( entrance[0]==0 || entrance[0]==maze.size()-1 || entrance[1]==0 || entrance[1]==maze[0].size()-1 ) ){
-		visited[entrance[0]][entrance[1]]=0 ;
-		return level;
-	}
-	bool border =0 ;
-
-	
-
-	vector<vector<int>> adjacency =	handleNeighbours(maze,entrance,visited,border);
-
-
-	if(border && level+1 <minpath ){
-		
-		// unchecking the visited element in maze 
-		// as it could be used in getting another path that could be better
-		// without uncheking it at end --> you say that you will use it only once
-		visited[entrance[0]][entrance[1]]=0;
-
-		minpath= level+1;
-		return minpath;
-	}
-
-	for(int i=0;i<adjacency.size(); i++){
-		vector<int> temp = adjacency[i];
-		//entrance = temp->getKey() ; 
-
-		// will pass last visited as my current entrance
-		// and new entrance will be temp->getkey as it is the neighbour 
-		Solve(maze,temp,visited,level+1,minpath );
-		
-
-	}
-	
-	
-
-	// There are tricky part here which is -->
-		// unchecking the visited element in maze 
-		// as it could be used in getting another path that could be better
-		// without uncheking it at end --> you say that you will use it only once
-	visited[entrance[0]][entrance[1]]=0 ;
-
-
-	if(minpath==INT_MAX)
-		return -1;
-
-	return minpath;
 }
 
 
@@ -183,56 +128,42 @@ int main(){
 
 	
 
-	vector<vector<char>> maze( 9,vector<char>(9, '.') );
+	vector<vector<char>> maze( 4,vector<char>(5, '+') );
 
-	//[".",".",".",".",".","+",".",".","."],
-	//[".","+",".",".",".",".",".",".","."],
-	//[".",".","+",".","+",".","+",".","+"],
-	//[".",".",".",".","+",".",".",".","."],
-	//[".",".",".",".","+","+",".",".","."],
-	//["+",".",".",".",".",".",".",".","."],
-	//[".",".",".","+",".",".",".",".","."],
-	//[".",".",".","+",".",".",".",".","+"],
-	//["+",".",".","+",".","+","+",".","."]
+	maze[0][3]='.';
 
-	maze[0][5]='+';
-	maze[1][1]='+';
-	maze[2][2]='+';
-	maze[2][4]='+';
-	maze[2][6]='+';
-	maze[2][8]='+';
-	maze[3][4]='+';
-	maze[4][4]='+';
-	maze[4][5]='+';
-	maze[5][0]='+';
-	maze[6][3]='+';
-	maze[7][3]='+';
-	maze[7][8]='+';
-	maze[8][0]='+';
-	maze[8][3]='+';
-	maze[8][5]='+';
-	maze[8][6]='+';
+	maze[1][1]='.';
+	maze[1][2]='.';
+	maze[1][3]='.';
+
+	maze[2][0]='.';
+	maze[2][1]='.';
+	maze[2][2]='.';
+	maze[2][3]='.';
+
+	maze[3][3]='.';
+	maze[3][4]='.';
 
 	vector<int> entrance;
 
 
 	
-	entrance.push_back(8);
-	entrance.push_back(4);
-
-	int minPath = INT_MAX ;
-
-
-	// minPath will be our solution its passed by reference to be able to check different solutions
-	// visited is a hashtable to save all visited nodes by making for ex if [1 0] -> so map[10] = 1; visited
-
-	vector<vector<int>> visited( maze.size(),vector<int>(maze[0].size(), 0) );
-
-	cout << Solve(maze,entrance,visited,0,minPath) << endl;
+	entrance.push_back(1);
+	entrance.push_back(2);
 
 	
 
-	//delete [] adjacencyList; 
+		int minPath = INT_MAX ;
+        
+        
+
+	    minPath =Solve2(maze,entrance);
+
+	
+        if(minPath==INT_MAX)
+	        minPath =-1 ;
+
+		cout << minPath << endl ;
 
 	system("pause") ;
 }
