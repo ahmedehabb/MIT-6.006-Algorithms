@@ -87,11 +87,12 @@ pair<int,int> extractMin(vector<pair<int,int>>&A){
 		return min ;
 }
 
-void decreaseNode(vector<pair<int,int>>&A, int oldValue , int newValue, int first= 0 ){
+void decreaseNode(vector<pair<int,int>>&A,int index, int oldValue , int newValue, int first= 0 ){
 	if(first>=A.size())
 		return ;
 
-	if(oldValue == A[first].second)
+	// check value and index also not only value as at first all have same value MAX_INT so cant compare values only
+	if(index==A[first].first && oldValue == A[first].second)
 	{
 		// root
 		A[first].second = newValue ;
@@ -111,14 +112,14 @@ void decreaseNode(vector<pair<int,int>>&A, int oldValue , int newValue, int firs
 			return ;
 		}
 
-		if(oldValue>=A[left].second && oldValue>=A[right].second){
-			decreaseNode(A,oldValue,newValue,left) ;
-			decreaseNode(A,oldValue,newValue,right) ;
+		if(right<A.size() && oldValue>=A[left].second && oldValue>=A[right].second){
+			decreaseNode(A,index,oldValue,newValue,left) ;
+			decreaseNode(A,index,oldValue,newValue,right) ;
 		}
 		else if(oldValue>=A[left].second){
-			decreaseNode(A,oldValue,newValue,left) ;
+			decreaseNode(A,index,oldValue,newValue,left) ;
 		}else
-			decreaseNode(A,oldValue,newValue,right) ;
+			decreaseNode(A,index,oldValue,newValue,right) ;
 	
 	}
 	
@@ -142,7 +143,7 @@ void RelaxEdge(vector<pair<int, int> > adj[] , int u , int v, int weight,
 
 	if(distance[v]> distance[u] + weight){
 
-		decreaseNode(Q,distance[v],distance[u] + weight);
+		decreaseNode(Q,v,distance[v],distance[u] + weight);
 		distance[v] = distance[u] + weight;
 		predecessor[v] = u ;
 	}
@@ -160,8 +161,8 @@ vector<int> Dijkstra(vector<pair<int, int> > adj[], int start, int Vertices,unor
 	
 	for (int i = 0; i < Vertices; i++)
 	{
-		distance[i]= INT_MAX - Vertices -1+ i ;
-		Q.push_back(make_pair(i,INT_MAX- Vertices -1+i));
+		distance[i]= INT_MAX;
+		Q.push_back(make_pair(i,INT_MAX));
 	}
 	
 	predecessor[start] = -1 ;
