@@ -3,52 +3,22 @@ using namespace std;
 #include<vector>
 #include <algorithm>
 
-int maxSatisfaction(vector<int>& satisfaction) {
-	
-	int size =satisfaction.size() ;
+int minCostStairs(vector<int>& cost){
+		 
+		// first represent first best possible for index i+1
+        // second represent first best possible for index i+2
 
-	sort(satisfaction.begin(),satisfaction.end());
-
-	int** matrix = new int*[size+2] ;
-
-	for (int i = 0; i < size+2; i++)
-	{
-		matrix[i] = new int[size+2];
-	}
-	for (int i = 0; i < size+2; i++)
-	{
-		matrix[size+1][i]= 0 ;
-		matrix[i][size+1]= 0 ;
-		matrix[i][0] = 0;
-		matrix[0][i] = 0;
-	}
-	
-	
-	
-
-		for (int i = size; i >=1; i--)
-		{
-			for (int j = 1; j <=size; j++)
-			{
-				matrix[i][j] = max(matrix[i+1][j] , matrix[i+1][j+1]+satisfaction[i-1]*j) ;
-			}
-		}
-	
-
-	
-
-		int solution =matrix[1][1];
-		// deallocation
-		for (int i = 0; i < size+1; i++)
-		{
-			delete [] matrix[i];
-		}
-		delete [] matrix;
-
-
-		return solution;
-}
-
+        int first = 0;
+        int second = 0;
+        int sol = 0 ;
+        for(int i = cost.size()-1; i>=0 ; i-- ){
+            sol = cost[i] + min (first,second);
+            second = first;
+            first = sol ; 
+        }
+        
+		return min(sol,second); // since we could start from 0 or 1 
+    }
 
 vector<int> countBits(int n) {
 	vector<int>  DP(n+1);
@@ -139,29 +109,113 @@ bool divisorGame(int n) {
         return WinTable[n];
 }
 
+int countVowelStrings(int n) {
+        // if you have seen matrix of sizes where
+        //a   1    5    15  35
+        //e   1    4    10  20
+        //i   1    3    6   10
+        //o   1    2    3    4
+        //u   1    1    1    1    
+             //1  //2  //3  //4  
+        
+        //where for u for any sizes we will just have 
+        // size=1 ->u  (1)
+        // size=2 ->uu (1)
+        // size=3 ->uuu (1)
+        // and so on 
+        
+        // while when turning to o
+        // at size(1) you have o only (1)
+        // at size(2) you are obliged to start with o so you have 1 remaining place empty
+                // this place can be either o,u so 2 choices 
+						// for easier , let matrix[o] represent the row of vowel"o" and same for others
+                // this two choices = matrix[o][1] + matrix[u][1]
+        // at size(3) you are obliged to start with o so you have 2 remaining place empty
+                // this place can be either oo,ou,uu so 3 choices 
+                // these 3 choices are matrix[o][2](oo,ou) + matrix[u][2] (uu)
+        
+        // while when turning to i
+        // at size(1) you have i only (1)
+        // at size(2) you are obliged to start with i so you have 1 remaining place empty
+                // this place can be either i,o,u so 3 choices 
+						// for easier , let matrix[i] represent the row of vowel"i" and same for others
+                // this three choices = matrix[i][1]+ matrix[o][1] + matrix[u][1]
+        // at size(3) you are obliged to start with i so you have 2 remaining place empty
+                // this place can be either (ii,io,iu) , (oo,ou) , (uu) so 6 choices 
+                // this three choices = matrix[i][2]+ matrix[o][2] + matrix[u][2]
+        
+        // and so on .... 
+        
+        // so its pretty appearing that 
+            // for matrix[i][j] it depends on all matrix[k][j-1] where k>=i
+        
+        //but doing it by a loop will works but will be not a good way to do it..
+        
+        // so we gonna use the idea of (CUMULATION)
+            // so wherever i go up i took the previous um i just calculated and go up with it
+            // so for ex when calculating matrix[i][3]
+                // matrix[i][3] = matrix[i][2]+ matrix[o][2] + matrix[u][2];
+        
+            //in order to do that
+                // matrix[o][2] will not only be (oo,ou) but it will also carry (uu) with it
+                // so we wont need to loop over them again
+                
+                // so same for matrix[i][2] it will be (ii,io,iu,  oo,ou , uu)
+        
+            // so our Calculation now changes to be
+                    // matrix[i][3]= matrix[i][2] + matrix[o][3] only;
+            
+            // and matrix[o][3] also carry o and u elements (ooo,oou,ouu   ,uuu)
+            //(thats it)!!
+                
+        // so for size(i) all possible solutions will be accumulated and summed up to be                //found at first row at the end
+            
+        int **matrix = new int*[5];
+
+        for(int i=0;i<5;i++){
+			matrix[i] = new int[n+1];
+            matrix[i][0]=1;
+        }
+        for(int i=0;i<n+1;i++){
+            matrix[4][i]=1 ;
+        }
+        
+        for(int i=1;i<=n;i++){
+            for(int j=3; j>=0;j--){
+               matrix[j][i]=matrix[j+1][i] + matrix[j][i-1];
+            }
+        }
+        
+
+        int result = matrix[0][n];
+
+		for(int i=0;i<5;i++){
+			delete [] matrix[i] ;
+        }
+		delete [] matrix ;
+		return result ;
+    }
+
 int main(){
 
 	//// 1.problem definition
-	///*
-	//A chef has collected data on the satisfaction level of his n dishes. Chef can cook any dish in 1 unit of time.
+		///////////////////////////////////
 
-	//Like-time coefficient of a dish is defined as the time taken to cook that dish including previous dishes multiplied by its satisfaction level  
-	//i.e.  time[i]*satisfaction[i]
+	//problem min cost climbing stairs
+	//	You are given an integer array cost where cost[i] is the cost of ith step on a staircase.Once you pay the cost, you can either climb one or two steps.
+	//You can either start from the step with index 0, or the step with index 1.
+	//Return the minimum cost to reach the top of the floor.
 
-	//Return the maximum sum of Like-time coefficient that the chef can obtain after dishes preparation.
+	/*
+	int arr[] = {1,100,1,1,1,100,1,1,100,1};
 
-	//Dishes can be prepared in any order and the chef can discard some dishes to get this maximum value
-	//*/
-	//vector<int> satisfaction;
-	//int satisfactionCopy[] = {2,3,4};
-	//
-	//
-	//for (int i = 0; i < 3; i++)
-	//{
-	//	satisfaction.push_back(satisfactionCopy[i]);
-	//}
-	////cout << maxSatisfaction(satisfaction)<<endl;
-	//sort(satisfaction.begin(),satisfaction.end());
+	vector<int> cost;
+	for(int i=0; i<10; i++)
+		cost.push_back(arr[i]) ;
+
+	cout<< minCostStairs(cost)<<endl;
+	*/
+
 	////////////////////////////////////////////////////////////////////////////
 
 
@@ -194,7 +248,31 @@ int main(){
 	//
 	//Return true if and only if Alice wins the game, assuming both players play optimally.
 
-	cout << divisorGame(100)<<endl;
+	//cout << divisorGame(100)<<endl;
+
+	///////////////////////////////////
+
+	//problem min cost climbing stairs
+	/*int arr[] = {1,100,1,1,1,100,1,1,100,1};
+
+	vector<int> cost;
+	for(int i=0; i<10; i++)
+		cost.push_back(arr[i]) ;
+
+	cout<< minCostStairs(cost)<<endl;*/
+
+
+
+
+	//////////////////////////
+
+	// problem 1641. Count Sorted Vowel Strings
+
+	//	Given an integer n, return the number of strings of length n that consist only of vowels (a, e, i, o, u) and are lexicographically sorted.
+	//
+	//A string s is lexicographically sorted if for all valid i, s[i] is the same as or comes before s[i+1] in the alphabet.
+
+	cout << countVowelStrings(10)<<endl ;
 
 
 	system("pause");
