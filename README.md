@@ -1,6 +1,7 @@
 # AlgorithmsMIT-6.006
 
 MIT 6.006 Introduction to Algorithms, Fall 2011
+<br>
 Course playlist : https://www.youtube.com/playlist?list=PLUl4u3cNGP61Oq3tWYp6V_F-5jb5L2iHb 
 
 This is the whole course made by MIT 6.006 all implemented in C++ 
