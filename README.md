@@ -7,7 +7,7 @@ Course playlist : https://www.youtube.com/playlist?list=PLUl4u3cNGP61Oq3tWYp6V_F
 <br>
 
 
-If you saw anything that could be made in a better way or isnt too much explained feel free to do your own change in this repo and i'll appreciate it and apply it.
+If you saw anything that could be made in a better way or isnt too much explained feel free to pull request.
 <br>
 Hope you make the most benefit out of my code.
 
